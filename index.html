@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0a0d11">
+<title>Life OS</title>
+<style>
+:root{--bg:#080b0f;--card:#11161c;--card2:#171d24;--line:#242c35;--text:#f5f7fa;--muted:#8e99a6;--orange:#ff6b2c;--green:#48d681;--blue:#4ea4ff;--yellow:#f5c95d;--red:#ff6874}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}body{padding-bottom:84px}.app{max-width:780px;margin:auto;padding:16px}
+header{display:flex;align-items:center;justify-content:space-between;padding:4px 0 16px}.logo{font-size:14px;font-weight:900;letter-spacing:1.2px}.date{font-size:12px;color:var(--muted);margin-top:4px}.avatar{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:900;background:linear-gradient(135deg,#ff9b65,#ff4b1c)}
+.hero{border:1px solid var(--line);border-radius:26px;padding:20px;background:radial-gradient(circle at 90% 0%,#252d35 0,#141a20 38%,#10151b 100%);box-shadow:0 16px 45px #0006}.hero h1{margin:0;font-size:29px;letter-spacing:-.8px}.hero p{margin:8px 0 0;color:var(--muted);line-height:1.5}.herorow{display:flex;gap:18px;align-items:center;margin-top:20px}.ring{width:82px;height:82px;border-radius:50%;background:conic-gradient(var(--orange) var(--p),#29313a 0);display:grid;place-items:center;flex:none}.ring:after{content:attr(data-v);width:64px;height:64px;border-radius:50%;background:#0e1318;display:grid;place-items:center;font-weight:900}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;flex:1}.metric{background:#ffffff08;border:1px solid #ffffff0b;border-radius:15px;padding:11px}.metric b{font-size:19px}.metric small{display:block;color:var(--muted);margin-top:3px}
+h2{font-size:17px;margin:24px 2px 10px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin:9px 0}.task{display:flex;align-items:center;gap:12px}.check{width:29px;height:29px;border-radius:9px;border:2px solid #3e4954;display:grid;place-items:center;flex:none}.done .check{background:var(--green);border-color:var(--green);color:#06130b}.done .name{text-decoration:line-through;color:#737e8a}.name{font-weight:800}.desc{color:var(--muted);font-size:12px;line-height:1.4;margin-top:4px}.time{font-weight:900;width:46px}.tag{margin-left:auto;color:var(--muted);font-size:10px;background:#ffffff09;padding:5px 8px;border-radius:999px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.goal{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}.goal b{display:block}.goal small{display:block;color:var(--muted);line-height:1.4;margin-top:5px}.bar{height:7px;background:#252d36;border-radius:99px;overflow:hidden;margin-top:11px}.fill{height:100%;width:0;background:var(--orange);border-radius:99px}
+button{font:inherit;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:13px;padding:11px 13px;font-weight:800}button:active{transform:scale(.98)}.primary{background:var(--orange);border-color:var(--orange)}.wide{width:100%;margin-top:11px}.row{display:flex;gap:9px}.row>*{flex:1}
+.bottom{position:fixed;z-index:9;left:0;right:0;bottom:0;background:#0a0d11ee;backdrop-filter:blur(18px);border-top:1px solid var(--line)}.nav{max-width:780px;margin:auto;display:grid;grid-template-columns:repeat(5,1fr)}.nav button{border:0;background:none;color:#74808c;border-radius:0;padding:9px 4px;font-size:10px}.nav button.active{color:#fff}.ico{font-size:18px;display:block;margin-bottom:2px}
+.toast{position:fixed;left:16px;right:16px;bottom:92px;max-width:740px;margin:auto;background:#202830;border:1px solid #39434d;padding:13px 14px;border-radius:15px;display:none;z-index:20}.toast.show{display:block}.mini{font-size:12px;color:var(--muted)}.quote{border-left:3px solid var(--orange);padding-left:12px;line-height:1.5;color:#dce2e8}.hidden{display:none}
+@media(min-width:680px){.app{padding-top:26px}}
+</style>
+</head>
+<body>
+<main id="app" class="app"></main>
+<div id="toast" class="toast"></div>
+<nav class="bottom"><div class="nav">
+<button data-page="home">◉<span class="ico">Home</span></button>
+<button data-page="plan">◷<span class="ico">Plan</span></button>
+<button data-page="goals">↗<span class="ico">Goals</span></button>
+<button data-page="stats">▥<span class="ico">Stats</span></button>
+<button data-page="settings">⚙<span class="ico">Settings</span></button>
+</div></nav>
+<script>
+const SKEY="lifeos_v2_"+new Date().toISOString().slice(0,10);
+const schedule=[
+["05:00","Bangun + Ibadah","Subuh, dzikir, doa, Qur'an 10–15 menit","IBADAH"],
+["06:10","Workout","Strength/cardio 30–40 menit sesuai hari","HEALTH"],
+["07:30","Sarapan + Ready","Protein, buah/sayur, air putih, rapikan kamar","HEALTH"],
+["08:00","Coding Deep Work","60m konsep + 60m praktik/project","CODING"],
+["10:00","English Fluency","20m listening + 20m speaking + 20m writing/vocab","ENGLISH"],
+["11:00","Job Search","5–10 lowongan → pilih 2–5 → CV → apply → tracking","CAREER"],
+["12:00","Dzuhur + Lunch","Ibadah, makan, power nap 20–30m bila perlu","IBADAH"],
+["13:30","Career Skill","Sales, Commercial, Leadership, Excel, BD","CAREER"],
+["15:00","Ashar + Walk","Ibadah + jalan 10–15 menit","HEALTH"],
+["16:00","Interview Practice","1 pertanyaan, jawab 2 menit, rekam, evaluasi","CAREER"],
+["18:00","Maghrib + Family","Ibadah, keluarga, makan malam","IBADAH"],
+["19:30","Light Learning","Review English/coding/buku maksimal 60m","LEARNING"],
+["20:00","Isya + Wind-down","Ibadah, siapkan besok, kurangi layar","IBADAH"],
+["21:00","Night Review","Syukur 3 hal, checklist, nilai hari 1–10","MINDSET"],
+["21:30","Sleep Routine","HP jauh, lampu redup, tidur maksimal 22:00","HEALTH"]
+];
+const goals=[
+["💼","Supervisor Job","15–25 lamaran berkualitas/minggu · 5 mock interview","career"],
+["🇬🇧","English Fluency","Listening + speaking setiap hari; fokus interview","english"],
+["🕌","Ibadah","Bangun 05:00 dan menjaga rutinitas ibadah","worship"],
+["💪","Health","Workout 4–5×/minggu · tidur ≥7 jam","health"],
+["💻","Coding","8–10 jam/minggu · 1 mini-project/minggu","coding"],
+["🧠","Positive Life","Morning journal · night review · batasi scrolling","mindset"]
+];
+let state=JSON.parse(localStorage.getItem(SKEY)||"{}"), page="home";
+const done=()=>schedule.reduce((n,_,i)=>n+(state[i]?1:0),0);
+function save(){localStorage.setItem(SKEY,JSON.stringify(state))}
+function notify(title,body){if("Notification"in window&&Notification.permission==="granted")new Notification(title,{body})}
+function toast(t){const e=document.getElementById("toast");e.textContent=t;e.classList.add("show");setTimeout(()=>e.classList.remove("show"),2800)}
+function render(){
+ const p=Math.round(done()/schedule.length*100);
+ let content=`<header><div><div class="logo">LIFE OS</div><div class="date">${new Date().toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"})}</div></div><div class="avatar">I</div></header>`;
+ if(page==="home") content+=home(p); if(page==="plan")content+=plan();if(page==="goals")content+=goalspage(p);if(page==="stats")content+=stats(p);if(page==="settings")content+=settings();
+ document.getElementById("app").innerHTML=content;
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+}
+function home(p){
+ return `<section class="hero"><h1>Bangun. Bergerak. Bertumbuh.</h1><p>Fokus hari ini: ibadah, kesehatan, skill, English, dan pekerjaan.</p><div class="herorow"><div class="ring" style="--p:${p}%" data-v="${p}%"></div><div class="metrics"><div class="metric"><b>${done()}</b><small>selesai</small></div><div class="metric"><b>${schedule.length-done()}</b><small>tersisa</small></div><div class="metric"><b>05:00</b><small>bangun</small></div></div></div><button class="primary wide" onclick="enableNotifications()">🔔 Aktifkan reminder</button></section>
+ <h2>Next Up</h2>${schedule.map((x,i)=>`<div class="card ${state[i]?'done':''}" onclick="toggle(${i})"><div class="task"><div class="time">${x[0]}</div><div class="check">${state[i]?'✓':''}</div><div style="flex:1"><div class="name">${x[1]}</div><div class="desc">${x[2]}</div></div><span class="tag">${x[3]}</span></div></div>`).join("")}`;
+}
+function plan(){return `<section class="hero"><h1>Daily Plan</h1><p>Jam pagi digunakan untuk pekerjaan yang membutuhkan fokus tinggi. Siang–sore untuk job search dan interview.</p></section><h2>05:00 — 22:00</h2>${schedule.map((x,i)=>`<div class="card ${state[i]?'done':''}" onclick="toggle(${i})"><div class="task"><div class="time">${x[0]}</div><div class="check">${state[i]?'✓':''}</div><div style="flex:1"><div class="name">${x[1]}</div><div class="desc">${x[2]}</div></div><span class="tag">${x[3]}</span></div></div>`).join("")}`}
+function goalspage(p){return `<section class="hero"><h1>90-Day Mission</h1><p>Target besar dipecah menjadi tindakan kecil yang bisa diukur setiap hari.</p></section><h2>Core Goals</h2><div class="grid">${goals.map(g=>`<div class="goal"><b>${g[0]} ${g[1]}</b><small>${g[2]}</small><div class="bar"><div class="fill" style="width:${p}%"></div></div></div>`).join("")}</div>`}
+function stats(p){return `<section class="hero"><h1>Progress</h1><p>Konsistensi adalah metrik utama.</p><div class="herorow"><div class="ring" style="--p:${p}%" data-v="${p}%"></div><div><b>${done()} dari ${schedule.length}</b><div class="mini">task selesai hari ini</div></div></div></section><h2>Weekly Scorecard</h2><div class="card"><ul><li>15–25 lamaran berkualitas</li><li>5 mock interview</li><li>8–10 jam coding</li><li>English setiap hari</li><li>Workout 4–5×</li><li>1 mini-project coding</li></ul></div><div class="card"><b>Minimum Day</b><p class="mini">Saat energi rendah: ibadah tetap, workout 10m, English 20m, coding 30m, minimal 1 lamaran, Qur'an 5m.</p></div>`}
+function settings(){return `<section class="hero"><h1>Settings</h1><p>Untuk alarm Android yang benar-benar aktif walaupun aplikasi ditutup, prototype ini perlu dibungkus menjadi APK dengan local notification/exact alarm.</p><button class="primary wide" onclick="enableNotifications()">🔔 Izinkan notifikasi</button><button class="wide" onclick="testNotify()">🧪 Tes notifikasi</button><button class="wide" onclick="reset()">↺ Reset hari ini</button></section><h2>Rules</h2><div class="card"><div class="quote">Job search adalah prioritas karier sekarang. Coding tetap berjalan sebagai investasi jangka panjang. English diarahkan ke fluency dan interview.</div></div>`}
+function toggle(i){state[i]=!state[i];save();render()}
+function reset(){if(confirm("Reset checklist hari ini?")){state={};save();render()}}
+async function enableNotifications(){if(!("Notification"in window)){toast("Browser tidak mendukung Web Notification.");return}const p=await Notification.requestPermission();if(p==="granted"){toast("Reminder aktif di browser ini.");notify("Life OS","Reminder harian aktif.");scheduleTimers()}else toast("Izin notifikasi belum diberikan.")}
+function testNotify(){if(Notification.permission==="granted")notify("Life OS — Tes","Notifikasi berhasil.");else enableNotifications()}
+function scheduleTimers(){schedule.forEach(x=>{const [h,m]=x[0].split(":").map(Number),d=new Date();d.setHours(h,m,0,0);const ms=d-new Date();if(ms>0&&ms<86400000)setTimeout(()=>notify("Life OS · "+x[0],x[1]+" — "+x[2]),ms)})}
+document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{page=b.dataset.page;render()});
+render();
+</script>
+</body>
+</html>

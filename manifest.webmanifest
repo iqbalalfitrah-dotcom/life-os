@@ -1,0 +1,10 @@
+{
+  "name":"Life OS — Iqbal",
+  "short_name":"Life OS",
+  "start_url":"./index.html",
+  "display":"standalone",
+  "orientation":"portrait",
+  "background_color":"#080b0f",
+  "theme_color":"#080b0f",
+  "description":"Personal operating system for worship, health, English, coding and career."
+}
